@@ -6,18 +6,31 @@
  */
 
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, Platform, Alert, TouchableHighlight, Image } from 'react-native';
+import { 
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Platform,
+  Alert,
+  TouchableHighlight,
+  Image,
+  ActivityIndicator
+} from 'react-native';
 import flatListData from '../data/flatListData';
 import Swipeout from 'react-native-swipeout';
+import axios from 'axios';
 
 import AddModal from './AddModal';
 import EditModal from './EditModal';
+
+const PHOTOS_URL = 'https://jsonplaceholder.typicode.com/photos';
 
 class FlatListItem extends Component {
 
   state = {
     activeRowKey: null,
-    numberOfRefresh: 0
+    numberOfRefresh: 0,
   }
 
   refreshFlatListItem = () => {
@@ -31,6 +44,7 @@ class FlatListItem extends Component {
   }
 
   render() {
+
     const swipeSettings = {
       autoClose: true,
       onClose: (secId, rowId, direction) => {
@@ -44,8 +58,8 @@ class FlatListItem extends Component {
       right: [
         {
           onPress: () => {
-            alert('Update')
-            // this.props.parentFlatList.refs.editModal.showEditModal(flatListData[this.props.item], this)
+            // alert('Update')
+            this.props.parentFlatList.refs.editModal.showEditModal(flatListData[this.props.index], this)
           },
           text: 'Edit', type: 'primary'
         },{
@@ -89,7 +103,7 @@ class FlatListItem extends Component {
             // backgroundColor: 'mediumseagreen',
           }}>
             <Image
-              source={{uri: this.props.item.imageUrl}}
+              source={{uri: this.props.item.thumbnailUrl}}
               style={{width: 100, height:100, margin: 5}}
             />
             <View style={{
@@ -97,8 +111,8 @@ class FlatListItem extends Component {
               flexDirection: 'column',
               height: 100
             }}>
-              <Text style={styles.flatListItem}>{this.props.item.name}</Text>
-              <Text style={styles.flatListItem}>{this.props.item.foodDescription}</Text>
+              <Text style={styles.flatListItem}>{this.props.item.albumId}</Text>
+              <Text style={styles.flatListItem}>{this.props.item.title}</Text>
             </View>
           </View>
           <View style={{
@@ -116,6 +130,8 @@ export default class BasicFlatList extends Component {
 
   state = {
     deleteRowKey: null,
+    photos: [],
+    isLoading: true,
   }
 
   refreshFlatList = (activeKey) => {
@@ -130,7 +146,44 @@ export default class BasicFlatList extends Component {
     this.refs.addModal.showAddModal()
   }
 
+  getAlbumById = async (id) => {
+    try {
+      let album = await axios.get('https://dog.ceo/api/breeds/list/all')
+      return album
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  getPhotos = () => {
+    fetch(PHOTOS_URL)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(this.getAlbumById(1))
+        this.setState({
+          isLoading: false,
+          photos: responseJson
+        })
+        // console.log(responseJson)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+  }
+
+  componentDidMount() {
+    return this.getPhotos()
+  }
+
   render() {
+    if (this.state.isLoading) {
+      return(
+        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 20}}>
+          <ActivityIndicator/>
+        </View>
+      )
+    }
+
     return (
       <View style={styles.container}>
         <View style={styles.containerAddItem}>
@@ -147,9 +200,9 @@ export default class BasicFlatList extends Component {
         </View>
         <FlatList
           ref={"flatList"}
-          data={flatListData}
+          data={this.state.photos}
           renderItem={ ({item, index}) => {
-            console.log(`Item = ${JSON.stringify(item)}, index = ${index}`)
+            // console.log(`Item = ${JSON.stringify(item)}, index = ${index}`)
             return (
               <FlatListItem
                 item={item}
@@ -159,6 +212,7 @@ export default class BasicFlatList extends Component {
               </FlatListItem>
             )
           } }
+          keyExtractor={(item, index) => `'${item.id}'`}
         >
         </FlatList>
 

@@ -24,19 +24,19 @@ export default class EditModal extends Component {
   }
 
   showEditModal = (editingFood, flatlistItem) => {
-    console.log(`editingFood = ${JSON.stringify(editingFood)}`)
-    // this.setState({
-    //   key: editingFood.key,
-    //   foodName: editingFood.name,
-    //   foodDescription: editingFood.foodDescription,
-    //   flatlistItem
-    // })
-    // this.refs.myModal.open()
+    // console.log(`editingFood = ${JSON.stringify(editingFood)}`)
+    this.setState({
+      key: editingFood.key,
+      foodName: editingFood.name,
+      foodDescription: editingFood.foodDescription,
+      flatlistItem
+    })
+    this.refs.myModal.open()
   }
 
-  // generateKey = (numberOfCharacters) => {
-  //   return require('random-string')({length: numberOfCharacters})
-  // }
+  generateKey = (numberOfCharacters) => {
+    return require('random-string')({length: numberOfCharacters})
+  }
 
   render() {
     return (
@@ -46,7 +46,7 @@ export default class EditModal extends Component {
         position='center'
         backdrop={true}
         onClosed={() => {
-          alert('Modal closed')
+          // alert('Modal closed')
         }}
       >
         <Text style={styles.textTitle}>
@@ -68,23 +68,23 @@ export default class EditModal extends Component {
           style={{fontSize: 18, color: 'white'}}
           containerStyle={styles.button}
           onPress={() => {
-            console.log('Update Item')
-            // if (this.state.foodName.length == 0 || 
-            //   this.state.foodDescription.length == 0) {
-            //   alert("You must enter food's name and description")
-            // }
-            // // Update existing food
-            // var foundIndex = flatListData.findIndex(
-            //   item => this.state.key == item.key
-            // )
-            // if (foundIndex < 0) {
-            //   return // not found
-            // }
-            // flatListData[foundIndex].name = this.state.foodName
-            // flatListData[foundIndex].foodDescription = this.state.foodDescription
-            // // Refresh flatlist item
-            // this.state.flatlistItem.refreshFlatListItem()
-            // this.refs.myModal.close()
+            // console.log('Update Item')
+            if (this.state.foodName.length == 0 || 
+              this.state.foodDescription.length == 0) {
+              alert("You must enter food's name and description")
+            }
+            // Update existing food
+            var foundIndex = flatListData.findIndex(
+              item => this.state.key == item.key
+            )
+            if (foundIndex < 0) {
+              return // not found
+            }
+            flatListData[foundIndex].name = this.state.foodName
+            flatListData[foundIndex].foodDescription = this.state.foodDescription
+            // Refresh flatlist item
+            this.state.flatlistItem.refreshFlatListItem()
+            this.refs.myModal.close()
           }}
         >
         Save

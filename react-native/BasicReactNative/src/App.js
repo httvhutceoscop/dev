@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import HomeScreen from './components/HomeScreen';
 import BasicFlatList from './components/BasicFlatList';
 import BasicSectionList from './components/BasicSectionList';
+import ListLoadMore from './components/ListLoadMore';
 
 
 const AppNavigator = createStackNavigator({
@@ -18,6 +19,10 @@ const AppNavigator = createStackNavigator({
   ScreenSectionList: {
     screen: BasicSectionList,
     title: 'Programming Language'
+  },
+  ListLoadMore: {
+    screen: ListLoadMore,
+    title: 'List Load More'
   },
 },{
   initialRouteName: "Home"
