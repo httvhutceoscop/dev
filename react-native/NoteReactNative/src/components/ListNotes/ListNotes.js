@@ -12,7 +12,8 @@ import styles from './styles';
 import {
   Button,
   ListItem,
-  Header
+  Header,
+  CheckBox
 } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -41,6 +42,7 @@ export default class ListNotes extends Component {
   state = {
     isLoading: true,
     noteData: [],
+    selectedNote: []
   }
 
   _retrieveData = async (key) => {
@@ -76,15 +78,14 @@ export default class ListNotes extends Component {
   }
 
   componentDidMount() {
+    console.log('did mount')
     this.props.navigation.addListener('didFocus', () => {
       this._retrieveData(KEY_DATA)
-      // console.log('fuuuuu')
-      // if (this.state.isLoading) {
-      //   this._retrieveData(KEY_DATA)
-      // } else {
-
-      // }
     })
+  }
+
+  componentWillUpdate() {
+    console.log('will update')
   }
 
   keyExtractor = (item, index) => index.toString()
@@ -103,7 +104,12 @@ export default class ListNotes extends Component {
           onPress={ () => {
             this.moveToScreen('AddNote', { indexNote: index })
           }}
-          onLongPress={() => alert('long press')}
+          onLongPress={() => {
+            this.setState({ selectedNote: [...this.state.selectedNote, ...[index]] })
+            console.log(this.state.selectedNote)
+          }}
+          chevron
+          
         />)
     }
     return

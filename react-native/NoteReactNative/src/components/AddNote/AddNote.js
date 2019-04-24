@@ -17,20 +17,6 @@ var { width, height } = Dimensions.get('window')
 const KEY_DATA = config.storageKey
 var g_indexNote = null
 
-_removeNote = async () => {
-  try {
-    const retrievedItem =  await AsyncStorage.getItem(KEY_DATA)
-    if (retrievedItem != null) {
-      const item = JSON.parse(retrievedItem)
-      item[g_indexNote].deletedAt = new Date().toLocaleString()
-
-      await AsyncStorage.setItem(KEY_DATA, JSON.stringify(item))
-    }
-  } catch(e) {
-    console.error(e)
-  }
-}
-
 export default class AddNote extends Component {
   state = {
     text: '',
@@ -42,11 +28,21 @@ export default class AddNote extends Component {
     indexNote: null,
   }
 
-  static navigationOptions = ({ navigation }) => {
-    const indexNote = navigation.getParam('indexNote', null);
+  static _removeNote = async () => {
+    try {
+      const retrievedItem =  await AsyncStorage.getItem(KEY_DATA)
+      if (retrievedItem != null) {
+        const item = JSON.parse(retrievedItem)
+        item[g_indexNote].deletedAt = new Date().toLocaleString()
 
-    return {
-      headerRight: indexNote != null ? (
+        await AsyncStorage.setItem(KEY_DATA, JSON.stringify(item))
+      }
+    } catch(e) {
+      console.error(e)
+    }
+  }
+
+  static headerView = (navigation) => (
         <View style={{paddingRight: 10}}>
           <Icon 
             size={24}
@@ -64,7 +60,7 @@ export default class AddNote extends Component {
                       style: 'cancel',
                     },
                     {text: 'OK', onPress: () => {
-                        _removeNote()
+                        AddNote._removeNote()
                         navigation.goBack()
                         
                     }},
@@ -74,7 +70,13 @@ export default class AddNote extends Component {
               )
             } } />
         </View>
-      ) : null,
+      )
+
+  static navigationOptions = ({ navigation }) => {
+    const indexNote = navigation.getParam('indexNote', null);
+
+    return {
+      headerRight: indexNote != null ?  AddNote.headerView(navigation) : null,
     }
   }
 
@@ -110,6 +112,11 @@ export default class AddNote extends Component {
   _storeData = async (key, item) => {
     try {
       var jsonOfItem = await AsyncStorage.setItem(key, JSON.stringify(item))
+
+      // TODO
+      // USING REDUX 
+      // 
+      // 
       return jsonOfItem
     } catch (error) {
       console.error(error)
