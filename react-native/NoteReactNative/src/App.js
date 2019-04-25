@@ -6,10 +6,11 @@
  */
 
 import React, {Component} from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import Colors from './helpers/Colors';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
 import Navigation from './components/navigation';
+import store from './reducers';
+import { Provider } from 'react-redux';
 
 const styles = StyleSheet.create({
   container: {
@@ -42,7 +43,9 @@ export default class App extends Component {
     if (!ready) return this.renderEmpty();
 
     return (
-      <Navigation />
+      <Provider store={store}>
+        <Navigation />
+      </Provider>
     );
   }
 }

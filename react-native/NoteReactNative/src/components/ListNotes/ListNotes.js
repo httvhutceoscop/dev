@@ -7,6 +7,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import moment from 'moment';
 
+import NotesListContainer  from '../../containers/NotesList';
+import NoteDetailContainer  from '../../containers/NoteDetail';
+
 const KEY_DATA = config.storageKey;
 
 class TextDate extends Component {
@@ -46,7 +49,7 @@ export default class ListNotes extends Component {
   };
 
   _countNotes = (noteData) => {
-    let count = 0
+    let count = 0;
     noteData.map((note) => {
       if (note.deletedAt == null) {
         count++
@@ -54,6 +57,36 @@ export default class ListNotes extends Component {
     });
 
     return count
+  };
+
+  _renderHeader = () => {
+    return (
+      <View style={styles.headerContainer}>
+        <Header
+          centerComponent={{ text: 'Notes', style: { color: '#fff', fontWeight: 'bold', fontSize: 18 } }}
+          rightComponent={{ icon: 'edit', color: '#fff' }}
+        />
+      </View>
+    )
+  };
+  _renderFooter = () => {
+    return (
+      <View style={styles.footerContainer}>
+        <View style={styles.footerLeft}>
+          <Text style={styles.textCountNotes}>{this._countNotes(this.state.noteData)} Notes</Text>
+        </View>
+        <View style={styles.footerRight}>
+          <Icon
+            iconStyle={{marginLeft: 140}}
+            size={24}
+            raised
+            name='plus'
+            type='font-awesome'
+            color='#f50'
+            onPress={() => this.moveToScreen('AddNote')} />
+        </View>
+      </View>
+    )
   };
 
   componentWillMount() {
@@ -71,32 +104,6 @@ export default class ListNotes extends Component {
     console.log('will update')
   }
 
-  keyExtractor = (item, index) => index.toString();
-  renderItem = ({ item, index }) => {
-    if(item.deletedAt == null) {
-      return (
-        <ListItem
-          title={(<Text numberOfLines={1} style={styles.itemTitle}>{item.title}</Text>)}
-          subtitle={(
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              <TextDate item={item} />
-              <Text numberOfLines={1} style={styles.itemSubTitle}>{item.subtitle}</Text>
-            </View>
-          )}
-          bottomDivider
-          onPress={ () => {
-            this.moveToScreen('AddNote', { indexNote: index })
-          }}
-          onLongPress={() => {
-            this.setState({ selectedNote: [...this.state.selectedNote, ...[index]] });
-            console.log(this.state.selectedNote)
-          }}
-          chevron
-          
-        />)
-    }
-  };
-
   moveToScreen = (screen, params = {}) => {
     this.props.navigation.navigate(screen, params)
   };
@@ -104,38 +111,11 @@ export default class ListNotes extends Component {
   render() {
     return (
       <View style={styles.container}>
-
-        <View style={styles.headerContainer}>
-          <Header
-            centerComponent={{ text: 'Notes', style: { color: '#fff', fontWeight: 'bold', fontSize: 18 } }}
-            rightComponent={{ icon: 'edit', color: '#fff' }}
-          />
-        </View>
-
+        {this._renderHeader}
         <ScrollView style={styles.scrollViewContainer}>
-          <FlatList
-            keyExtractor={this.keyExtractor}
-            data={this.state.noteData}
-            renderItem={this.renderItem}
-          />
+          <NotesListContainer name={'tri'} {...this.props} />
         </ScrollView>
-
-        <View style={styles.footerContainer}>
-          <View style={styles.footerLeft}>
-            <Text style={styles.textCountNotes}>{this._countNotes(this.state.noteData)} Notes</Text>
-          </View>
-          <View style={styles.footerRight}>
-            <Icon
-              iconStyle={{marginLeft: 140}}
-              size={24}
-              raised
-              name='plus'
-              type='font-awesome'
-              color='#f50'
-              onPress={() => this.moveToScreen('AddNote')} />
-          </View>
-        </View>
-
+        {this._renderFooter}
       </View>
     );
   }   
