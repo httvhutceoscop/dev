@@ -1,36 +1,21 @@
 import React, { Component } from 'react';
-import { 
-  StyleSheet,
-  Text, 
-  View,
-  FlatList,
-  ScrollView,
-  Dimensions,
-  TouchableHighlight
-} from 'react-native';
+import { Text, View, FlatList, ScrollView } from 'react-native';
 import styles from './styles';
-import {
-  Button,
-  ListItem,
-  Header,
-  CheckBox
-} from 'react-native-elements';
+import { ListItem, Header } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
 import config from '../../config';
 import moment from 'moment';
 
-var {width, height} = Dimensions.get('window')
-const KEY_DATA = config.storageKey
+const KEY_DATA = config.storageKey;
 
 class TextDate extends Component {
   render() {
-    var updatedAt = moment(new Date(this.props.item.updatedAt)).format('MM/DD/YY')
-    var today = moment(new Date()).format('MM/DD/YY')
-    if (updatedAt == today) {
+    let updatedAt = moment(new Date(this.props.item.updatedAt)).format('MM/DD/YY');
+    let today = moment(new Date()).format('MM/DD/YY');
+    if (updatedAt === today) {
       updatedAt = moment(new Date(this.props.item.updatedAt)).format('hh:mm')
     }
-
     return (
       <Text style={styles.itemCreatedAt}>{updatedAt}</Text>
     );
@@ -43,13 +28,13 @@ export default class ListNotes extends Component {
     isLoading: true,
     noteData: [],
     selectedNote: []
-  }
+  };
 
   _retrieveData = async (key) => {
     try {
-      const retrievedItem =  await AsyncStorage.getItem(key)
+      const retrievedItem =  await AsyncStorage.getItem(key);
       if (retrievedItem != null) {
-        const item = JSON.parse(retrievedItem)
+        const item = JSON.parse(retrievedItem);
         this.setState({
           isLoading: false,
           noteData: [...item]
@@ -58,9 +43,7 @@ export default class ListNotes extends Component {
     } catch(error) {
       console.error(error)
     }
-
-    return
-  }
+  };
 
   _countNotes = (noteData) => {
     let count = 0
@@ -68,17 +51,17 @@ export default class ListNotes extends Component {
       if (note.deletedAt == null) {
         count++
       }
-    })
+    });
 
     return count
-  }
+  };
 
   componentWillMount() {
     console.log('will mount')
   }
 
   componentDidMount() {
-    console.log('did mount')
+    console.log('did mount');
     this.props.navigation.addListener('didFocus', () => {
       this._retrieveData(KEY_DATA)
     })
@@ -88,7 +71,7 @@ export default class ListNotes extends Component {
     console.log('will update')
   }
 
-  keyExtractor = (item, index) => index.toString()
+  keyExtractor = (item, index) => index.toString();
   renderItem = ({ item, index }) => {
     if(item.deletedAt == null) {
       return (
@@ -105,19 +88,18 @@ export default class ListNotes extends Component {
             this.moveToScreen('AddNote', { indexNote: index })
           }}
           onLongPress={() => {
-            this.setState({ selectedNote: [...this.state.selectedNote, ...[index]] })
+            this.setState({ selectedNote: [...this.state.selectedNote, ...[index]] });
             console.log(this.state.selectedNote)
           }}
           chevron
           
         />)
     }
-    return
-  }
+  };
 
   moveToScreen = (screen, params = {}) => {
     this.props.navigation.navigate(screen, params)
-  }
+  };
 
   render() {
     return (
