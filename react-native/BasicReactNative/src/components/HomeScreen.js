@@ -7,12 +7,12 @@ import {
   Platform,
   TouchableOpacity
 } from 'react-native';
-import CustomImageSlider from './CustomImageSlider';
 import CustomSlideShow from './CustomSlideShow';
 
 const SCREEN_FLAT_LIST = 'flat-list'
 const SCREEN_SECTION_LIST = 'section-list'
 const SCREEN_LIST_LOAD_MORE = 'list-load-more'
+const SCREEN_DATE_TIME_PICKER = 'SCREEN_DATE_TIME_PICKER'
 
 const screenListData = [{
   name: 'Basic Flat List',
@@ -26,6 +26,10 @@ const screenListData = [{
   name: 'List Load More',
   icon: '',
   slug: SCREEN_LIST_LOAD_MORE
+},{
+  name: 'Date Time Picker',
+  icon: '',
+  slug: SCREEN_DATE_TIME_PICKER
 },]
 
 class ScreenListItem extends Component {
@@ -68,6 +72,9 @@ export default class HomeScreen extends Component {
       case SCREEN_LIST_LOAD_MORE:
         this.props.navigation.navigate('ListLoadMore')
         break;
+      case SCREEN_DATE_TIME_PICKER:
+        this.props.navigation.navigate('DateTimePickerTester')
+        break;
       default:
         break;
     }
@@ -76,7 +83,6 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {/*<CustomImageSlider />*/}
         <CustomSlideShow />
         <FlatList
           ref={"screenList"}

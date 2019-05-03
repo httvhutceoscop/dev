@@ -1,12 +1,4 @@
 import React, { Component } from 'react';
-import { 
-  View,
-  Text,
-  FlatList, 
-  StyleSheet,
-  Platform,
-  TouchableOpacity
-} from 'react-native';
 import Slideshow from 'react-native-slideshow';
 
 export default class CustomSlideShow extends Component {

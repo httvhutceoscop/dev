@@ -5,6 +5,7 @@ import HomeScreen from './components/HomeScreen';
 import BasicFlatList from './components/BasicFlatList';
 import BasicSectionList from './components/BasicSectionList';
 import ListLoadMore from './components/ListLoadMore';
+import DateTimePickerTester from './components/DateTimePickerTester';
 
 
 const AppNavigator = createStackNavigator({
@@ -23,6 +24,10 @@ const AppNavigator = createStackNavigator({
   ListLoadMore: {
     screen: ListLoadMore,
     title: 'List Load More'
+  },
+  DateTimePickerTester: {
+    screen: DateTimePickerTester,
+    title: 'Date Time Picker'
   },
 },{
   initialRouteName: "Home"
